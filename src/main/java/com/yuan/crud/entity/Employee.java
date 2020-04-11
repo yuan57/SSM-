@@ -11,6 +11,9 @@ public class Employee {
 
     private Integer dId;
 
+    //希望查询员工信息查询到部门信息
+    private Department dept;
+
     public Integer getEmpId() {
         return empId;
     }
@@ -49,5 +52,13 @@ public class Employee {
 
     public void setdId(Integer dId) {
         this.dId = dId;
+    }
+
+    public Department getDept() {
+        return dept;
+    }
+
+    public void setDept(Department dept) {
+        this.dept = dept;
     }
 }
