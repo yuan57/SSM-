@@ -44,7 +44,7 @@ public class MvcTest {
         //模拟请求拿到返回值
         MvcResult rs = mockMvc.perform(MockMvcRequestBuilders.get("/emps").param("pn", "5")).andReturn();
 
-        //请求成功以后，请求域会有pageInfo,去除pageInfo进行验证
+        //请求成功以后，请求域会有pageInfo, 去除pageInfo进行验证
         MockHttpServletRequest request = rs.getRequest();
         PageInfo pageInfo = (PageInfo)request.getAttribute("pageInfo");
         System.out.println("当前页码："+pageInfo.getPageNum());
