@@ -61,4 +61,12 @@ public class Employee {
     public void setDept(Department dept) {
         this.dept = dept;
     }
+
+    public Employee(Integer empId, String empName, String gender, String email, Integer dId) {
+        this.empId = empId;
+        this.empName = empName;
+        this.gender = gender;
+        this.email = email;
+        this.dId = dId;
+    }
 }

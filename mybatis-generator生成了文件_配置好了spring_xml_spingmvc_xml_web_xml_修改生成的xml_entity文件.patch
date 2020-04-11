@@ -1,0 +1,926 @@
+Index: target/classes/mapper/EmployeeMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- target/classes/mapper/EmployeeMapper.xml	(date 1586584320120)
++++ target/classes/mapper/EmployeeMapper.xml	(date 1586584320120)
+@@ -0,0 +1,246 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.yuan.crud.mapper.EmployeeMapper">
++  <resultMap id="BaseResultMap" type="com.yuan.crud.entity.Employee">
++    <id column="emp_id" jdbcType="INTEGER" property="empId" />
++    <result column="emp_name" jdbcType="VARCHAR" property="empName" />
++    <result column="gender" jdbcType="CHAR" property="gender" />
++    <result column="email" jdbcType="VARCHAR" property="email" />
++    <result column="d_id" jdbcType="INTEGER" property="dId" />
++  </resultMap>
++  <resultMap id="WithDeptBaseResultMap" type="com.yuan.crud.entity.Employee">
++    <id column="emp_id" jdbcType="INTEGER" property="empId" />
++    <result column="emp_name" jdbcType="VARCHAR" property="empName" />
++    <result column="gender" jdbcType="CHAR" property="gender" />
++    <result column="email" jdbcType="VARCHAR" property="email" />
++    <result column="d_id" jdbcType="INTEGER" property="dId" />
++    <association property="dept" javaType="com.yuan.crud.entity.Department">
++      <id column="dept_id" property="deptId"></id>
++      <result column="dept_name" property="deptName"></result>
++    </association>
++  </resultMap>
++  <sql id="Example_Where_Clause">
++    <where>
++      <foreach collection="oredCriteria" item="criteria" separator="or">
++        <if test="criteria.valid">
++          <trim prefix="(" prefixOverrides="and" suffix=")">
++            <foreach collection="criteria.criteria" item="criterion">
++              <choose>
++                <when test="criterion.noValue">
++                  and ${criterion.condition}
++                </when>
++                <when test="criterion.singleValue">
++                  and ${criterion.condition} #{criterion.value}
++                </when>
++                <when test="criterion.betweenValue">
++                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
++                </when>
++                <when test="criterion.listValue">
++                  and ${criterion.condition}
++                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
++                    #{listItem}
++                  </foreach>
++                </when>
++              </choose>
++            </foreach>
++          </trim>
++        </if>
++      </foreach>
++    </where>
++  </sql>
++  <sql id="Update_By_Example_Where_Clause">
++    <where>
++      <foreach collection="example.oredCriteria" item="criteria" separator="or">
++        <if test="criteria.valid">
++          <trim prefix="(" prefixOverrides="and" suffix=")">
++            <foreach collection="criteria.criteria" item="criterion">
++              <choose>
++                <when test="criterion.noValue">
++                  and ${criterion.condition}
++                </when>
++                <when test="criterion.singleValue">
++                  and ${criterion.condition} #{criterion.value}
++                </when>
++                <when test="criterion.betweenValue">
++                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
++                </when>
++                <when test="criterion.listValue">
++                  and ${criterion.condition}
++                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
++                    #{listItem}
++                  </foreach>
++                </when>
++              </choose>
++            </foreach>
++          </trim>
++        </if>
++      </foreach>
++    </where>
++  </sql>
++  <sql id="Base_Column_List">
++    emp_id, emp_name, gender, email, d_id
++  </sql>
++  <!--查询员工不带部门信息-->
++  <select id="selectByExample" parameterType="com.yuan.crud.entity.EmployeeExample" resultMap="BaseResultMap">
++    select
++    <if test="distinct">
++      distinct
++    </if>
++    <include refid="Base_Column_List" />
++    from tbl_emp
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++    <if test="orderByClause != null">
++      order by ${orderByClause}
++    </if>
++  </select>
++  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
++    select
++    <include refid="Base_Column_List" />
++    from tbl_emp
++    where emp_id = #{empId,jdbcType=INTEGER}
++  </select>
++  <!--查询员工同时带部门信息-->
++  <select id="selectByExampleWithDept" parameterType="com.yuan.crud.entity.EmployeeExample" resultMap="WithDeptBaseResultMap">
++    select
++    <if test="distinct">
++      distinct
++    </if>
++    <include refid="Base_Column_List" />
++    from   tbl_emp e left join
++    tbl_dept d on e.d_id = d.dept_id
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++    <if test="orderByClause != null">
++      order by ${orderByClause}
++    </if>
++  </select>
++  <select id="selectByPrimaryKeyWithDept" parameterType="java.lang.Integer" resultMap="WithDeptBaseResultMap">
++    select
++    <include refid="Base_Column_List" />
++    from   tbl_emp e left join
++    tbl_dept d on e.d_id = d.dept_id
++    where emp_id = #{empId,jdbcType=INTEGER}
++  </select>
++  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
++    delete from tbl_emp
++    where emp_id = #{empId,jdbcType=INTEGER}
++  </delete>
++  <delete id="deleteByExample" parameterType="com.yuan.crud.entity.EmployeeExample">
++    delete from tbl_emp
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++  </delete>
++  <insert id="insert" parameterType="com.yuan.crud.entity.Employee">
++    insert into tbl_emp (emp_id, emp_name, gender, 
++      email, d_id)
++    values (#{empId,jdbcType=INTEGER}, #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=CHAR}, 
++      #{email,jdbcType=VARCHAR}, #{dId,jdbcType=INTEGER})
++  </insert>
++  <insert id="insertSelective" parameterType="com.yuan.crud.entity.Employee">
++    insert into tbl_emp
++    <trim prefix="(" suffix=")" suffixOverrides=",">
++      <if test="empId != null">
++        emp_id,
++      </if>
++      <if test="empName != null">
++        emp_name,
++      </if>
++      <if test="gender != null">
++        gender,
++      </if>
++      <if test="email != null">
++        email,
++      </if>
++      <if test="dId != null">
++        d_id,
++      </if>
++    </trim>
++    <trim prefix="values (" suffix=")" suffixOverrides=",">
++      <if test="empId != null">
++        #{empId,jdbcType=INTEGER},
++      </if>
++      <if test="empName != null">
++        #{empName,jdbcType=VARCHAR},
++      </if>
++      <if test="gender != null">
++        #{gender,jdbcType=CHAR},
++      </if>
++      <if test="email != null">
++        #{email,jdbcType=VARCHAR},
++      </if>
++      <if test="dId != null">
++        #{dId,jdbcType=INTEGER},
++      </if>
++    </trim>
++  </insert>
++  <select id="countByExample" parameterType="com.yuan.crud.entity.EmployeeExample" resultType="java.lang.Long">
++    select count(*) from tbl_emp
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++  </select>
++  <update id="updateByExampleSelective" parameterType="map">
++    update tbl_emp
++    <set>
++      <if test="record.empId != null">
++        emp_id = #{record.empId,jdbcType=INTEGER},
++      </if>
++      <if test="record.empName != null">
++        emp_name = #{record.empName,jdbcType=VARCHAR},
++      </if>
++      <if test="record.gender != null">
++        gender = #{record.gender,jdbcType=CHAR},
++      </if>
++      <if test="record.email != null">
++        email = #{record.email,jdbcType=VARCHAR},
++      </if>
++      <if test="record.dId != null">
++        d_id = #{record.dId,jdbcType=INTEGER},
++      </if>
++    </set>
++    <if test="_parameter != null">
++      <include refid="Update_By_Example_Where_Clause" />
++    </if>
++  </update>
++  <update id="updateByExample" parameterType="map">
++    update tbl_emp
++    set emp_id = #{record.empId,jdbcType=INTEGER},
++      emp_name = #{record.empName,jdbcType=VARCHAR},
++      gender = #{record.gender,jdbcType=CHAR},
++      email = #{record.email,jdbcType=VARCHAR},
++      d_id = #{record.dId,jdbcType=INTEGER}
++    <if test="_parameter != null">
++      <include refid="Update_By_Example_Where_Clause" />
++    </if>
++  </update>
++  <update id="updateByPrimaryKeySelective" parameterType="com.yuan.crud.entity.Employee">
++    update tbl_emp
++    <set>
++      <if test="empName != null">
++        emp_name = #{empName,jdbcType=VARCHAR},
++      </if>
++      <if test="gender != null">
++        gender = #{gender,jdbcType=CHAR},
++      </if>
++      <if test="email != null">
++        email = #{email,jdbcType=VARCHAR},
++      </if>
++      <if test="dId != null">
++        d_id = #{dId,jdbcType=INTEGER},
++      </if>
++    </set>
++    where emp_id = #{empId,jdbcType=INTEGER}
++  </update>
++  <update id="updateByPrimaryKey" parameterType="com.yuan.crud.entity.Employee">
++    update tbl_emp
++    set emp_name = #{empName,jdbcType=VARCHAR},
++      gender = #{gender,jdbcType=CHAR},
++      email = #{email,jdbcType=VARCHAR},
++      d_id = #{dId,jdbcType=INTEGER}
++    where emp_id = #{empId,jdbcType=INTEGER}
++  </update>
++</mapper>
+\ No newline at end of file
+Index: target/classes/mapper/DepartmentMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- target/classes/mapper/DepartmentMapper.xml	(date 1586582896359)
++++ target/classes/mapper/DepartmentMapper.xml	(date 1586582896359)
+@@ -0,0 +1,164 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.yuan.crud.mapper.DepartmentMapper">
++  <resultMap id="BaseResultMap" type="com.yuan.crud.entity.Department">
++    <id column="dept_id" jdbcType="INTEGER" property="deptId" />
++    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
++  </resultMap>
++  <sql id="Example_Where_Clause">
++    <where>
++      <foreach collection="oredCriteria" item="criteria" separator="or">
++        <if test="criteria.valid">
++          <trim prefix="(" prefixOverrides="and" suffix=")">
++            <foreach collection="criteria.criteria" item="criterion">
++              <choose>
++                <when test="criterion.noValue">
++                  and ${criterion.condition}
++                </when>
++                <when test="criterion.singleValue">
++                  and ${criterion.condition} #{criterion.value}
++                </when>
++                <when test="criterion.betweenValue">
++                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
++                </when>
++                <when test="criterion.listValue">
++                  and ${criterion.condition}
++                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
++                    #{listItem}
++                  </foreach>
++                </when>
++              </choose>
++            </foreach>
++          </trim>
++        </if>
++      </foreach>
++    </where>
++  </sql>
++  <sql id="Update_By_Example_Where_Clause">
++    <where>
++      <foreach collection="example.oredCriteria" item="criteria" separator="or">
++        <if test="criteria.valid">
++          <trim prefix="(" prefixOverrides="and" suffix=")">
++            <foreach collection="criteria.criteria" item="criterion">
++              <choose>
++                <when test="criterion.noValue">
++                  and ${criterion.condition}
++                </when>
++                <when test="criterion.singleValue">
++                  and ${criterion.condition} #{criterion.value}
++                </when>
++                <when test="criterion.betweenValue">
++                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
++                </when>
++                <when test="criterion.listValue">
++                  and ${criterion.condition}
++                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
++                    #{listItem}
++                  </foreach>
++                </when>
++              </choose>
++            </foreach>
++          </trim>
++        </if>
++      </foreach>
++    </where>
++  </sql>
++  <sql id="Base_Column_List">
++    dept_id, dept_name
++  </sql>
++  <select id="selectByExample" parameterType="com.yuan.crud.entity.DepartmentExample" resultMap="BaseResultMap">
++    select
++    <if test="distinct">
++      distinct
++    </if>
++    <include refid="Base_Column_List" />
++    from tbl_dept
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++    <if test="orderByClause != null">
++      order by ${orderByClause}
++    </if>
++  </select>
++  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
++    select 
++    <include refid="Base_Column_List" />
++    from tbl_dept
++    where dept_id = #{deptId,jdbcType=INTEGER}
++  </select>
++  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
++    delete from tbl_dept
++    where dept_id = #{deptId,jdbcType=INTEGER}
++  </delete>
++  <delete id="deleteByExample" parameterType="com.yuan.crud.entity.DepartmentExample">
++    delete from tbl_dept
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++  </delete>
++  <insert id="insert" parameterType="com.yuan.crud.entity.Department">
++    insert into tbl_dept (dept_id, dept_name)
++    values (#{deptId,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR})
++  </insert>
++  <insert id="insertSelective" parameterType="com.yuan.crud.entity.Department">
++    insert into tbl_dept
++    <trim prefix="(" suffix=")" suffixOverrides=",">
++      <if test="deptId != null">
++        dept_id,
++      </if>
++      <if test="deptName != null">
++        dept_name,
++      </if>
++    </trim>
++    <trim prefix="values (" suffix=")" suffixOverrides=",">
++      <if test="deptId != null">
++        #{deptId,jdbcType=INTEGER},
++      </if>
++      <if test="deptName != null">
++        #{deptName,jdbcType=VARCHAR},
++      </if>
++    </trim>
++  </insert>
++  <select id="countByExample" parameterType="com.yuan.crud.entity.DepartmentExample" resultType="java.lang.Long">
++    select count(*) from tbl_dept
++    <if test="_parameter != null">
++      <include refid="Example_Where_Clause" />
++    </if>
++  </select>
++  <update id="updateByExampleSelective" parameterType="map">
++    update tbl_dept
++    <set>
++      <if test="record.deptId != null">
++        dept_id = #{record.deptId,jdbcType=INTEGER},
++      </if>
++      <if test="record.deptName != null">
++        dept_name = #{record.deptName,jdbcType=VARCHAR},
++      </if>
++    </set>
++    <if test="_parameter != null">
++      <include refid="Update_By_Example_Where_Clause" />
++    </if>
++  </update>
++  <update id="updateByExample" parameterType="map">
++    update tbl_dept
++    set dept_id = #{record.deptId,jdbcType=INTEGER},
++      dept_name = #{record.deptName,jdbcType=VARCHAR}
++    <if test="_parameter != null">
++      <include refid="Update_By_Example_Where_Clause" />
++    </if>
++  </update>
++  <update id="updateByPrimaryKeySelective" parameterType="com.yuan.crud.entity.Department">
++    update tbl_dept
++    <set>
++      <if test="deptName != null">
++        dept_name = #{deptName,jdbcType=VARCHAR},
++      </if>
++    </set>
++    where dept_id = #{deptId,jdbcType=INTEGER}
++  </update>
++  <update id="updateByPrimaryKey" parameterType="com.yuan.crud.entity.Department">
++    update tbl_dept
++    set dept_name = #{deptName,jdbcType=VARCHAR}
++    where dept_id = #{deptId,jdbcType=INTEGER}
++  </update>
++</mapper>
+\ No newline at end of file
+Index: src/main/resources/applicationContext.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/resources/applicationContext.xml	(revision d083eb905da65e5cfcfdf71e759f25143b5d4617)
++++ src/main/resources/applicationContext.xml	(date 1586585908335)
+@@ -33,6 +33,11 @@
+         <!--扫描所有dao的接口 -->
+         <property name="basePackage" value="com.yuan.crud.mapper"></property>
+     </bean>
++   <!-- 配置可以执行批量的sqlsession-->
++    <bean id="SqlSession" class="org.mybatis.spring.SqlSessionTemplate">
++        <constructor-arg name="sqlSessionFactory" ref="SqlSessionFactory"></constructor-arg>
++        <constructor-arg name="executorType" value="BATCH"></constructor-arg>
++    </bean>
+ 
+     <!--=================事务控制========================== -->
+     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+Index: src/main/java/com/yuan/crud/entity/Department.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/yuan/crud/entity/Department.java	(revision d083eb905da65e5cfcfdf71e759f25143b5d4617)
++++ src/main/java/com/yuan/crud/entity/Department.java	(date 1586584800473)
+@@ -20,4 +20,11 @@
+     public void setDeptName(String deptName) {
+         this.deptName = deptName == null ? null : deptName.trim();
+     }
++
++    public Department(Integer deptId, String deptName) {
++        this.deptId = deptId;
++        this.deptName = deptName;
++    }
++    public Department() {
++    }
+ }
+\ No newline at end of file
+Index: src/main/java/com/yuan/crud/entity/Employee.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/yuan/crud/entity/Employee.java	(revision d083eb905da65e5cfcfdf71e759f25143b5d4617)
++++ src/main/java/com/yuan/crud/entity/Employee.java	(date 1586585087623)
+@@ -61,4 +61,12 @@
+     public void setDept(Department dept) {
+         this.dept = dept;
+     }
++
++    public Employee(Integer empId, String empName, String gender, String email, Integer dId) {
++        this.empId = empId;
++        this.empName = empName;
++        this.gender = gender;
++        this.email = email;
++        this.dId = dId;
++    }
+ }
+\ No newline at end of file
+Index: target/classes/applicationContext.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- target/classes/applicationContext.xml	(revision d083eb905da65e5cfcfdf71e759f25143b5d4617)
++++ target/classes/applicationContext.xml	(date 1586585908335)
+@@ -33,6 +33,11 @@
+         <!--扫描所有dao的接口 -->
+         <property name="basePackage" value="com.yuan.crud.mapper"></property>
+     </bean>
++   <!-- 配置可以执行批量的sqlsession-->
++    <bean id="SqlSession" class="org.mybatis.spring.SqlSessionTemplate">
++        <constructor-arg name="sqlSessionFactory" ref="SqlSessionFactory"></constructor-arg>
++        <constructor-arg name="executorType" value="BATCH"></constructor-arg>
++    </bean>
+ 
+     <!--=================事务控制========================== -->
+     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+Index: src/main/java/com/yuan/crud/test/MapperTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/yuan/crud/test/MapperTest.java	(date 1586586090802)
++++ src/main/java/com/yuan/crud/test/MapperTest.java	(date 1586586090802)
+@@ -0,0 +1,47 @@
++package com.yuan.crud.test;
++
++import com.yuan.crud.entity.Department;
++import com.yuan.crud.entity.Employee;
++import com.yuan.crud.mapper.DepartmentMapper;
++import com.yuan.crud.mapper.EmployeeMapper;
++import org.apache.ibatis.session.SqlSession;
++import org.junit.Test;
++import org.junit.runner.RunWith;
++import org.mybatis.spring.SqlSessionTemplate;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.test.context.ContextConfiguration;
++import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
++
++import java.util.UUID;
++
++@RunWith(SpringJUnit4ClassRunner.class)
++@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
++public class MapperTest {
++    @Autowired
++    private DepartmentMapper departmentMapper;
++
++    @Autowired
++    private EmployeeMapper employeeMapper;
++
++    @Autowired
++    SqlSession sqlSession;
++
++    @Test
++    public void testCRUD(){
++        System.out.println(departmentMapper);
++        //1、插入几个部门
++//        departmentMapper.insertSelective(new Department(null,"开发部"));
++//        departmentMapper.insertSelective(new Department(null,"测试部"));
++
++        //2、生成员工数据 测试员工插入
++//        employeeMapper.insertSelective( new Employee(null,"zs","M","642318014@qq.com",1));
++/*        3、批量插入 使用可以批量操作的sqlsession
++        for(){}
++        */
++        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
++        for(int i=0;i<1000;i++){
++            String uuid = UUID.randomUUID().toString().substring(0, 5);
++            mapper.insertSelective(new Employee(null,uuid,"M",uuid+"@qq.com",1));
++        }
++    }
++}
+diff --git target/classes/com/yuan/crud/mapper/EmployeeMapper.class target/classes/com/yuan/crud/mapper/EmployeeMapper.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..18f22e4b31a7753d720baa16b81deeee7eb24623
+GIT binary patch
+literal 1128
+zc$}S5T~8B16g^X+1r!#FQUpJ1OyI?N;lTuBq7frnBe99b$LaQ_4B4IC%+5CMU-Q8q
+z;Eyui4&CfhOxn<-xwGe<JNKM>=g;3?zX2Sf+rpC;o(gP)Np9TR;^e1_(})BP4|-t|
+z%OY1shBhBcGETcfo^U!Th^EBj!;b>NkRoz)lj>7}c3FL9b*yahi3)+8gWiQ2D;X&>
+zlBdSeh^%KfwaLgjf$p3Zo*i7W``jUPdd$j#%%5voUoNWkQc>=7Bzrn@#{#Q;Ju=GW
+zmaqA7!)sp6vGJPwv`f+T5gq+^M00Kv=*$e@yLRXADCLRnUGGvQck^_pYCEot^uxSO
+zEdCa{U-=d4n7-*u4<b5KR>k}_>>Fber<_hqCh)wM*pXDJ3eQRE0mGS86+!wccDg)P
+zQO^3Bmcqmi1zJ?@JeYAKuwNpT`I^P{^{l{JKgn%K@Aag9yR`FJr777Llhp`3yXrjl
+zIeC>TuvzW#%iw~0HU$J4nEck41a4so;JA#Yk1eeDxQaC&Z%^YLtaIH4S2Ymu_a?SH
+r-k!m?r}$mmV|<74PJ<5}{_keEUmf?Dw7&@H!BoM+No4qu@Adc}HZn)P
+
+diff --git target/classes/com/yuan/crud/mapper/DepartmentMapper.class target/classes/com/yuan/crud/mapper/DepartmentMapper.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..061ca4dc096ca86adc72f65228fcc0a1a10da11a
+GIT binary patch
+literal 1071
+zc$}S5+iDa+5IwynyC%_0T+Kz}4M`v(*e~LP5kXNQI%06aHy>(ei?zc{&(PDeIKSqD
+zAK*ucwVhpNjKanY3{_oyPSvTZ{`u?s4**YazlXa$+*4Rj^2+*G^_y>$6)7t`I*5}z
+z({)8wC$1W4w%+(!zvhCR&*U_N9zJ}h5REux&llq#DfH+3V`nmQ^?R-rwhrPGnvhP(
+zj`flCJZ2ZrU1LjjUSV%xk${g*@dK%mcry`oQ5pP}-e>36d#bAPCe^Vi{h`9jz>F>V
+z%1NRx7f$qiVKXnJR(~$NJ*ubw9M!^n3OiLXqSoSCGl~}v_kULW;FCNslksO$nqkVv
+z<S3JsyO-AHp1jFzsjwgCZmg-G<ST14lyIr30qDRI*~=43E790>oaAn#(Bt_cqca^T
+z?9L<2#9D3k|GrgN9psfu_^p}pH=Bk&P*JdZJe{?O{j>Wl-08Dmg^gx4ABQJWx2vGg
+z!Sq{OQn-XAK<qNQ!S--D*cGe>yEd~|a8-Eg!s;NB^9HVkcpuj#enaBh9dS10-zu@)
+WxH|&6c^=TMS*6{nmGJFQ>&|a#jy!t+
+
+diff --git target/classes/com/yuan/crud/entity/DepartmentExample$Criteria.class target/classes/com/yuan/crud/entity/DepartmentExample$Criteria.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..2de461f786927099fc0e2ef05e4e7c1d6539c263
+GIT binary patch
+literal 3673
+zc$}q`=~mM~6oBtYZCRo~LEOa!kxc@EidNZ5fod%(i2E|MV~M6Irm4$2`9ptkjz4?=
+zAI5X^0X*JYN*dsbV{Om*lHAO9XP<og_2nx7jDpt)C*cm^E@6?dM7T#-Cfp}HAUq^I
+zB0MHMAv`5KBRnU(AV|UrAw$R#6yYTyM_46Tgja;u1e=g2I1yNjz#9SKYnEeq;{xh>
+zdY1)+;)Sdd(44Xyl`iF1l)EHXY>Y%xg^aY9rEAf1B^dHnt)hVXxNCU|-v}_0j-%YT
+zEsI5kZ-!HuLf-sPl8%{iOIcGnp5=WoXVjW>y*xf8-pl-&t-3Zd!~`6WP8JJzX_;5)
+zf;X+acS<<|?)Ri#$+yz9rIRxkJ=bz_v7M3L8fuINYV@mX+1iXGhT@eLlswBeQ&!Qd
+zskVKA#FRC<wW5^u8b>z4bhehtnghu<G9L>@RI#|UDxC#4@unp0rGkJq=Cy#%Ky=Pk
+z64P(<I`|ShrqdUK-S&g+!Lcb~@pQ?y1&s96()ZS_$;z2FyO+!cm)67JXeS*{<&+y^
+zLbbG_#jnw?Zhx>5v;>;`06iV?pP2cX<(m3Gqf@O#z;QpuPjWl=e%qk>g{vLkG3VIN
+z>f|;DgXKt5PI=WMC5n^3ZQJ1xVv#A^u9k{e#bs$*+44d5NI>Iaq2y-NtVQQk$BvO0
+zq>Kifg3|`{LB9b5g!3?HfJqpFVFNA@MhK&Xi-b#r%Y-q)6}W0ZjBpLE8!%3opaheI
+zDVR1OPM9Gi2(yGa!aQk7!VS1-K#Fh+(h<Oe)BMK?6)>i0%qcveaqhBJwUvo=>!rgH
+z?8MIr{Z2rL#uEgb!KV?t3cT*^TL<wOZ}vbJvJtNUKd|UeIE#12Mj_~iUVxS<nu|(;
+zVW`7DK%}pKU>){+@>7J%%J+aC@%4c}=yiHJ&VNN8!qU{za9{sAgm$yTzHRdMUOgLE
+z9A}61><hdd(X&T*yI#*8<?RMN`yy{Q>e-igyGhT!%-e>ZJ;vMn^lUsiDz+KeD*Jbn
+ztJ@^T%FTK*o>c56Y0=vx<A2aw_4EmTmqhhOZIZX!^lUtjIlEoYj`Q{bJ$r_?JM`=X
+zZy(gNXL<XOo;}CghxP1vcBvlGTdGM`KB_0<SCx^E>B%WpKCUO@SDcYgeEhqN?-$Cv
+W4Lx{`;$0^c;2bpISGE9d$oLIXRieZI
+
+diff --git target/classes/com/yuan/crud/entity/Department.class target/classes/com/yuan/crud/entity/Department.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..59ea248cd2f28e38f190bd93dc1cd209ac04f8c7
+GIT binary patch
+literal 1071
+zc$|e&O>fgc5Ph4ZapO95-PWOL8`?k%j)U+4ZlGR3NRdK01Xbd=ajeuOb}Gj~>M!C7
+z5(S9^S0sKEFuPtkX|aSX&Frq{eeAP;{r>&~z*BT;SizwvZ5{V;Uq=;38jdwQV5p9Q
+z%d|IQ*y>;K58RvZc<lA!G#CfTGlo_1`jkfj!{*Y!AWgz}Oz&&sAbqJAY^PJmQF$>P
+z5#H>Fad0}1hC%X{4=0jw>hsANPeQR*hn4g^oH4Zf{xtHg<~;WNWIpnOI1SS)kF<D_
+zMzj;+vxRuWDbVhmF{~+v*(J7bc+9V{Hd`LDoquNpReg|h|NU!zDXq!`A5wzP!#GS&
+z7@Q&t#Y|;KRDCd=Cw}lM6!$h4S9>fl1~jZ1s6i(c0}gBhduTBn{3jTOjfLi$;YHxz
+zJj!f{pp!5{n|_Nb{U#-PNKmdwlX?}D3k<4t+IiF&^%eIE*e5x*u7*GWld6#oU;`F)
+z`n=du;1fwt({A?~>~oIR<!PNT>yn|7O(_Pk5|)JUHtYf;rQ1fVLL&{_QQ&iB#B#eo
+zp|Ow9x?fSgMoD-oFL|;F+*tBt<(@1V55o?vn<(`(H2)B^L|wyf-Wh$YeWm)2D9Y4L
+z_ZuoQ0{4;9%*=11LUo5~lh}9ZY)@(*X0Tk_RC$P1O*$1aEhY0LPljY}hrCbZt-^Hf
+H%E^Pjropy+
+
+diff --git target/classes/com/yuan/crud/entity/EmployeeExample$Criterion.class target/classes/com/yuan/crud/entity/EmployeeExample$Criterion.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..f6116e295f04fad6787e4fb17150f44f3c64b1ca
+GIT binary patch
+literal 2274
+zc$}40O>^5+6g^K?EX!7$(4=WoAciy$M{(i;;iI$^s7Yx{C<~Vi!%lJD1QkWjNOB=R
+zfuF!HfCUSfA=4Qa%&=v{f&~i}U9e!mg0GpDmVx%(=ZEYl8m8IYd*9PL_ndq5WPkhb
+zS6>5I!DSnxc!9%d4li;z!{IE4mpGi`@NyYdykg<iGA+(?Xjxdba6!QCbi++Q@w=hG
+zk+o~yb*~wC;a0PqM1Ht+MquQ+7xd)*hi`3MlbwVfR$|Hc_5Kkn?CMIq%g?AmAoY&3
+zA(IcJ4E53u{5a8dCE4AP7rk&ZkP#i+l1XczX|leMr^;+~Hwikn=7;i1Z+k;VSG|ou
+z$?SH#VBL#+Uh7RWdC!lDv=#Y@j8tFeQW(mp6?kzh>CvgRPItSx+w;O^C+clBWtjNM
+zZgX{eC+O}<x%#0;m7Gf(kc1Km)f4O&nYvS@6YXJxY(Kv8pGAfG0+}@G$L(R8s(yTa
+zpHUS*UK?1&9j^|%RXpp5esWIWX#Jo~3+n=>bM_Bv&Bu<m6R-3Bo8FGHQQer=)uow#
+zpr+j7jl<Iaub@K@Go+;4?)IXNyx{YNn9RJ`WrjEy!?=ToaKym`he;fDFvZ~*hvOWk
+z`A7p7>0KzAUg8H$enY&w%wfgCC4uF`-6w(Ztm=JR{bALup;_i0q&Xg^@4QOC6D1ft
+z8C3=kr}Bi(G@{B=Iv>;dxX#lGHwu9hc$nfNv}#folt<hzAwE~f9;I01P4OLOsCN1X
+zP{S-`fs>fa0UKHH_qpIFa>0cx_=jBZlbFu|o1bOCKjwn#x!{p3_+~D6As1ZCf`7^d
+zySZR13;sD5yqNo{N?F5x$pM>mftNJ+9Xf4Lo^)@(b{F>`T(O6eYwp4PBJDLrScqR?
+zir-+1-%%BRU_$(<dQbK7x;IyR4~1e`)-0dW8Iy8-z|z=*;VuzX;~SJeMui!zPx{Ow
+z%v?~+vvji|ZV~fsV*ZPm?-27{oDhFwR{Vo`aZjmm`~6cDb*+Lc{vHff@l7v~VM_Hq
+zI%--tW#K6cPg7)PSoJen^<`QW_}g+98{!5k13${#&oE#a1;zeY|6IymO4&=Ao%^on
+zz8}$={6y`b8wGdT)b<w#bThE1EW$J_*hUFe!^VVB#<WqvjNvE=EB%(Kgjy=0mKsn~
+zKM4g@u@(JspVhM7rVeZ(Nop+7yiRuBF_et)A-C<6%udPdl+4y-2A)%Wo~Pd`?nHk%
+Jc#Ryh?*m73jvN30
+
+diff --git target/classes/com/yuan/crud/entity/EmployeeExample$Criteria.class target/classes/com/yuan/crud/entity/EmployeeExample$Criteria.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..80f43a33c71cd7533bda23bbc72920f7e2c1ade0
+GIT binary patch
+literal 7293
+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
+
+diff --git target/classes/com/yuan/crud/entity/EmployeeExample.class target/classes/com/yuan/crud/entity/EmployeeExample.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..81d689306f2b2cf136f87bb3c638ccb1f7307d5b
+GIT binary patch
+literal 2231
+zc$}S9ZExFD7(F*}-ds2B(yXwxbZm?+O}3i7uocpEYtwFYWbKEdA@<Epu8K$MOpb#H
+zKZW1G2aqV!n8Xj@HzCBiw&S>NkQx-}zWF}qInTN0UgfWU{`eEXJ?!f!qMpOLjuh$z
+zOyi+yHdOOy3Xid=bF`&KjU2Xh=%}m7P7Y6Uc$&i(0)>Wad(ySLj)1Z2IMQu&tX@y{
+z1oGi0D~DZy3r{6KTApkVmj$M~Zd<xr1BUc_QlQj)Wqog%9m_c~4?Nd)j_QPI+da>A
+zTAqM-$s}Dj4lx^q^gX*{Ho1`jg#-J@vAn)Z#LdL#^=7MkY!3RCW47FW+mw!HdjoUl
+z_;sf{kaFh-iz9h`h+p3zUUuDfY;Qv#U0Hb{pf$Q}BF{8!NAC5H52gE+b=dLQcUxBH
+zg~d3|!$r;e)}|KA=gP}uvpwnUpH}5!<*Y1<$n4RXt>wzfI0>f+x*e&gRbHxa-R_On
+zSQ@pR@e$+lmWF_Ffg5KQ|BtMxt}Ae-GGU}*o^M6`%n8E<Zj=0^F~ycE>D-uc4?L^&
+z-E-@;f6BZY0`sT$>^kfmt0RzUb)>~o^@DETZOJFLvPC(OZB^-M-~%iP%#F0&bX{wp
+z1U7I9mknIRyn*-deh$wJe2J!k2e@nCIrao@O;nYEHI?i7d4g!Qk*W3%UrFVd)k)H+
+z*Wv!T0>-=&#nWD+S*><EaV-K?b!B3$Xa6XDNAKb)->)Lyx->MU9Y>my&+jQH1Qs|>
+zVG&atQ+>8qxU$6v!G5;-2BP{7sc+sOeFE)QfA@!Mi`)UCYaGq+ca<|Eh`}{{#Gc~f
+z;}CCyQ7QJ>YV8D>5sL1wmXN`mk1!wX3K7&uvF5{vW!wm{On(k!s=p!gO9Ykm7w2O{
+zG7*sqR?ZMvI6*c^<T7Ix{)32;O(m|PHik&{=LC_Zu|#g-7I!6swPY37#smikwaPUU
+zpM(sy!)go#QhSSB3STE{TISK-h}C37H5s^#J3b8)cSFRz5V2JK9r<Pqwl?Az9DS9{
+zYCP<lG3-)^ouM&?*!LprPKdn}VZTK|;3pK5dD4EK63qqHnjzK&qAe0@lxr!<bt%mC
+zDQ9_zzp<FZea1eBGH->M^>@(e<f&$?nn0yBMt&AU*F*F?XTwU?qU-UDtLkjZK@kRB
+zA?WLB`jn>v{tr>0>xy_pi$9K?YdOr2VqVpL&Ki{i)4WX6)U^Qh=cB}aj(u4({sqf<
+B!SetB
+
+diff --git target/classes/com/yuan/crud/entity/EmployeeExample$GeneratedCriteria.class target/classes/com/yuan/crud/entity/EmployeeExample$GeneratedCriteria.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..465e877daf9169068c23999c0aaaae27ec41fd30
+GIT binary patch
+literal 11484
+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
+KhT`?Jko$k)T<os^
+
+diff --git target/classes/com/yuan/crud/entity/DepartmentExample$GeneratedCriteria.class target/classes/com/yuan/crud/entity/DepartmentExample$GeneratedCriteria.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..d8bd2e298ecd60127aa12e0c28841ba44172830f
+GIT binary patch
+literal 6581
+zc$}@7+kYEJ6~}*T%hpI%WM`8&G_+J{-PV@vs+Ull+7?Zm#5Hl^wl;R0l7_XkaW+}6
+zl+`MU+d><lr5Abu8lVMIprsdROVf+p)V)76pAYZ=5AXmF@Bk0+NATgy?rOENW-VKv
+zK18#7X6E}lbLPz1@h89k-@6|G*oIG{xCv*%_*N7RI1|Aa@$D9T2M>htAj5Z~XvRZf
+zJQ76&4{`gWVSF!&7|t*}#@ojkp5X11e8l$|e!$xwGCUO}(%CS6#PDN=pD;Yl4bL$A
+zl;LL#KW8|{@GQeG7=Fp{E8h7W!}AQkW_W?&MTVCcUS{|W!*3a0VR)6{HHP0Yyv}f*
+z;SGj2!+0x<w<WNQsadM2DH7U7k0~dWRMFD()Tmal`XxlhwOK>4il$1>L(a&YAt5$m
+z7^*p>D}{nukg#jn%z@ENZZ0)nRE$){EM`-xVQJQUYL}W<OlywbcAr+}^19mLA^X#$
+z);ypYnw6H&*x5BHAvBcBl5Xp$W~lp%b2F+rq0H!Hkw<eGMW0m2YkGH$A?v6{uB;zc
+z$uq@LvqRp(ZeFcBRddOyuvVB<bS-Opbx^{(aZAY@->2kV-T16(?a=kIn%vn{9mqXZ
+z#yVrvLULuTn3B!<wq;YNBcdzDY--#xHDk7)M>3Mh8ClJ;$H>(~By1N<^jXGcj;R@|
+zUkq<Lspv(u66{W(^vavLylPtW685fDV@1_wTlM<V!wr-tijk%0StHqz!v3PJlXy8$
+zH&Xo97H_`yvLBhV9BP|q+<l^`=o2}<yFMpJ3`?C=&Hj1>HwZXn^%ThoPjsVa9X3@;
+zT65y4Li>A}$UJ6x)7E?aqiUhx%-K?9^G#?e2Z4qTbuLftde-S|8Xed6%A-7=FCFKr
+zs*X!_WcYbFu-qT<z<QjF`@_!HUf%hgs&z_L$uuq6`OhjD{Q90^Y5(>sb80EkH&)t8
+znJW9t-gfR5)rdO0+vJ1$)3V)XuSm?x#T~v(+u$2fPR>gOR^Oynf46pAtz0&F<`~!c
+zLqyb$71G9y3Qw=8mD0-_S5N%fD!t@B`5pK6durvf`PuEDrx+d270rygN8{(Py$W$H
+z7mr~O^r7BR4$cnKROWevV)zpJ!dQr55${lKDf@ayk-VZ*Je?s``(t#)B(DRBBRMnS
+zeWDT>#V~SKVn$6El*U|XUl<o8T({N_W(@CQNy6sk(b`$m^sH*qO3U&wyodKGo2t}5
+zz=zz0k7%)Ogc45ia;FXAW15zw6&=>H39aBx8^t~esWom2Y4}0phG8G%NXa@#r88@n
+z1g>x!t)SF1koFBr`#REtzK#L^j6vUvMw<~Yy>MY}@K!bBESzgj_<VHYRH{q1)u3D|
+z1%WcG(&nwFrEDiBSk_HKy3dq5_=0@n(iNS2QNGTB%9(?uwb-w^QxwVu?uTRaP2%fq
+zs~n?MuF6~KrpjTSy|3O|CMhq!_0S3`>keIT3)<bPeG46taP{i6XgJ*vmt73qdlkRT
+zHY@qOYS4gQ;a4Hx;P88$m2*t=@#(A{NF%OU)pd_w<<@-p^yY@P(w{yz(Vt=z9bR>)
+z-A-=}7{FGtP>CYTm&vjdjr0VxB^Mzjm(Vc1h{m@OI&Y7@g?{5S0@y>dhS7>!v4h@X
+z&K#P(%huRU{SI%KTHYro-$LjDnk1Y<IP@Yyjjxck(Iz(ABlh}8vP&AKe@$p;yM;q;
+z#R$2;p(z*I#G$Wyo;jQ`AE(LXIBWe1+4imuGQI*N#7maDykqp%K<(D<i&(dW=4m;+
+z2=*aIE+I1Ay@==qv@~Gqyti7JrT|m)dw^nj5DDCAi?ur-SByXHr?p6S3}{c{w(f1N
+z?pgARWBPh7;!3W&gc$AAIyt_8)?WH2x6#i6)>nAbvj|!2&Rz6-7#&b3Ic98kk`CW<
+zr_XhVKi!TyY-jr@PGiJzUF@)3oN!%yfkN3tZMx@EgnKWd!|&z>^6rvQpr5^q*eG^X
+z1;Y_^;V9*-W;?pgQSls2dyb~@RoBrpCh4ise&Q~NY?o>4Sb|1QVcPY1JB{WuTaxmo
+z1+*tW!sc>jL~WE#%bN3LM~j#A2Su3A1z=7P#uQ@i#MfNR9yht-N%@j)dCLMmFCv{p
+z1gCr%6!#(#r;R#fXZc+s=B2^Rdx&{&4d!7H^Ri&({lq*|gZXt4^9#Yu2Z;G#4W=Su
+zULMSRgqV-kV9tn`iD2dv#C);_GlQ&KnGTehTPvB3KIT)zJR87N?FxUy%Pwx2^=kf6
+zdeTH{R|Km)O={27t#%B@-FV$jr<I?>)}(x8cMq5A5C!ZUwa?me31_$`*Gh-_kS)_n
+zhx(9x(sU92sul3hQTzO=@pGbseRaUWeu)nD%ff?gh%na#U|uE6YeGy8`Rd&3?3TL%
+za_<e=xi<rIZ_LiU6C!3Zn7K&IcWN+A5wkm(`5rOfufZ&cm_5PFkBRw74W=bx_69RQ
+zCFaE%%%X^SZ7}l>#Qb9o=1CDV70mn-G5=hHc}m2*E|~cjV*a%T^R%e4TwlrbSC+pK
+z^Y3e@Ec0GvxtpHu5vkn}to9F5`)A#1_u?DXh2};oG+hCO=3mtQJFw7<d4*=ot_a^0
+s;kT`T{|~kQT_wH&_t~@WM?bY&XnX_@<7V*xjCmMCp%^w(djOID1Gd+hcmMzZ
+
+diff --git target/classes/com/yuan/crud/entity/DepartmentExample$Criterion.class target/classes/com/yuan/crud/entity/DepartmentExample$Criterion.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..1e0773da8eace40589ed09939264e9791c691c20
+GIT binary patch
+literal 2282
+zc$}40(Q?~F6g_Jzk!3qhX;P<YA%?Uxw&Fx-no`=7w2jj?EulQPWEkEQXD6sAaz>I1
+z`2;?JFMtOgV1`U*cwmNCJ_@*ZwaAX5VVakFcUSk^bMDc~{_F4G{{XOt=N2aLF^9Vx
+z?r~V>aG%2`95y&SD5HjlCLWb(v&o@j;<1S*0#>gd?0d1-4+JjmymDW=j_(EsPB#v{
+z;9y-~?6vC;<mrc>@4b?}m>yOl$@tx*#0>g+CBEWk)WDbeq`D{LZ>0?M*7Ch5*6T`q
+zd?dHsVBeP^6&}dAGt@NQY~`skI{kfuPVRVtd@(rOli^Eu&sQ@0J=foLLy!0R(1^eG
+zA|maCUMxe^xB4syWZ3cDD3bJOb*I-qbdCpZ;Pk@5z9WO!i;tZxdE|!iA?+T2=N=yU
+z@_O2WM3hLXp5e62)SntvbVn_+yy(S$CKa14vT4GLx}!$bylC^3RTVGV8Jfi%Uyk}U
+ze%}kccthY)^Q=*=U4gqf=V!I%V<)<?+xzA-_edG3?#xqlZ5H0DDYy9ay!8Jo=-k7M
+zC@FXQgRm!`czh-5XI||xgQ}Rsg(}{`#VV#aOyg1&bq+HeE_0aWk~X&KZ78Ba?D-DA
+zBR*Z`ux8?!z{+{=l)#0o@>562!0P7EJU8C1JwBlCy+*$mB@}o%S`~Oem8W#3F;%YX
+zJfrhvoo5wp0s>cXmEya!b0`bSWA<+lzo@eJD30@?Ffm8#YEpm(<|zwY!}T0+Aq%eL
+zf<Md!7qj5WT<{Gn<baKzGvKLQa5EP?mIcq`f?K)Z@htdiF4)cmn^|xp7rdDJs!CbI
+zuH}FYy2MKw{3TTvC{NpOVA+c&5Vkl$$u>@4{F?Tv6Bc3thG@bPE!2dKDY2+}*Au+%
+z%`3i#La{7smY=A`pxhj?v`<j5mx!wUC(1vd!i?sR3G)~;7Zvk7-E4?uVs?mmg_v&=
+z^D3^0TbLKOu^{d!6?W1;RngQcc*WmCL9O_v7s)WC`X4GaOstr=X=0TkJHx7PY1PkZ
+zSLAQYUTljus0{rmb3btprdU_(?<aLBdnsivX?E_rru%+Rd-4;Fvu+gaSwq`DKBSw2
+zNpu@z!UHnlA(`-qOxVP%=wME4DG6&y%Tz)mmC#5HXsDlrqFS*P$+)+*tS_hon@Ez{
+qOEhmaJMUAJ#P*2WR!U~2WL8RMX|e)7Qhn~wZxwf<KOSt6W7fYgHG^pY
+
+diff --git target/classes/com/yuan/crud/entity/Employee.class target/classes/com/yuan/crud/entity/Employee.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..dfcf7834969fdd2ea6ba2ce44e634927441daa86
+GIT binary patch
+literal 2039
+zc$}4#-&4~-5Xbk@w4ouTEl9DbEk6|66dFYZ1uQDRh8e^M9A2H!-jraQcGA=t{ty2L
+zUv)-w#s^=W@sCpXE}^vHYVqZE?{07Rlke^2*YEE?0N@ckk3tld*zi!r>0{<Cvtfk|
+zPuTEO1r=5mSW{q~K$zB>dldp>`={o6)2Nwt)!4ILTBXh!0R?vt%sM47+O>b^I+k6<
+z?MRi{73%OTrd1;ls<2#gg*IIR)BEK{-8gHTwo!K46@%KY<(?T^v}rnS9cP$fs7l>!
+zk6=8P7c$73jS2$9_br<qwCl&zd1D^eI8vi*){acaVsn2{c2BGpfvmVTmZ~+*C}ovf
+zoyw`4pm6?(fa=kC3f$=7>u8|1x?;w2S3_8$*r98d-@P)MoRVw*j6f9A@A?WxTbI5k
+z3K!I)<SvTsa(N>y-%)U7i%UI=Y=gyCS{Lzma|6Q}c4XbMEw@DAtw^D(pZcFGJyIVw
+z+D@77SnLvG7xz?T!5R#Mra=rwP&ExokkKFxBN`;wkYszKFs4BfHVEAL=e-k1T$X=*
+zd`io1&yvT;y2!EW*v`595lrKoQSos_Kw=>1NsNWtxNj4_P5S%DgEj`(H87523TFmd
+zf;Oyw0rH85P4KjAaTIRisCfa9hDo#pZozH;a0#O&7OfY~fqd?qR{3fQ&rI+PDKE;;
+zz`S9e6@`I}07MFcObS7=Fy$XU@j;S$;U_5MBPfNh5IP5mF@?IAGAK&6iz(S*N^<$|
+z|A2lPq&)>@{@_swtpc+hi(M*2mV?MMLgae`k>w!r93s#6L5^P!c}|EN4kGJ9<oSWf
+z;UIDmk&QmciR&TfgdG|QA}<M%^WqMT1UqyY&#d(6(4^m?IuryTN)TjK2(kc+A`m4A
+zQo=JEeL&c&Wrd3zfaUstF%h&=`ZpNjPfuUKUe_0~d-Sx77ow-bJ)fHa1;-a4!%O^c
+yY~mGcVb*P|vV+fImsc)%IXji7{71?>_B15!v5pIIk6on9JtkEcBk%Ki5B>rsMLDDZ
+
+diff --git target/classes/com/yuan/crud/entity/DepartmentExample.class target/classes/com/yuan/crud/entity/DepartmentExample.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..a3281a4f13a503300b2edf107953ddce4c829950
+GIT binary patch
+literal 2253
+zc$}S9ZExFD7(F*}-ds2B(k^3b>DU-unr!n%3oE4Swx-?a$l4D@L+snFV|CtKr*a%b
+z`6>JcK7d4-#w30KzX>7EbsWb{g4Ci&_s#b?&w0*0_bPw=^T(e6R<Nt1h<XldI#Q??
+zFo_4MSy#=&2|U7MoudskYUHq~Lq}arwsLrq!_yqT5-2o$C$N2|?Fks$o@e_FS9Usf
+zM<5@4k~wS(TzG2pqYUg;e_3F%?YC@y<Cr1cjxA7XzLwuh)0N(Vxfl43cTgux%jpD;
+zX9WV{C6l!MB*b(tq#HP{+2lqB6!x40PX=9|h>fAoYfY<tXdZW^XIg%@W!hfg1jpv4
+zeI)(hkh85H<l&KP-{@zkuM;u5=6Fu9E|9J)y%5kE?G~}8nvQ4hbPxA!{~NjQhWy)>
+zbYDouaULyd!7GPqRL+>0>83k&uzOmWi<MDn6qV_Nk*%|prExM&5OgzEQmedF;kwfq
+ztg$%iI~5`(B`);=lOk`8EdD=fQ*B>h<*eciVio(m6?43IZUBL0mT>;4qUGCkal*uV
+zfwbN{mq+1w^PUKlPw(0G*m=?w$XKo|S+Ks>?)sMf#8Cz*kL0_flr``n76fJnDnIsp
+zd90*1a2Zz&TtwNxC47*>GXr0vY2ZGV4Lrw=fO*c!46Lebi)Ra?@dg&#-G6N>|J*%a
+zO7&u_o-t(1+fh92KH68dT0<A5$E>bwt#zCq?a<@fxW-ql$QLjTO=-xHreq9z3JZZb
+zj#HS&1jjrDwpY2b!3e>Ay80HP`W~t8-XeVh?bmSkM{JAS0itUhP4Rb)Gou%S>-d<x
+zzzuv7;jJ?&#XeiDoggzn(ZkgeGMEVw%Dr6?f*L8-d=9aQn-P{7&VfwzH)MW^p|as(
+zIYA^76RBWngvi_pvcp8KFlO#Qh$z`q;woxmh-7~rBC;@+$SvIFuHj&9xQgpzf_n#b
+zhifM8MhrHiY77NZdxu;K-wxNb$fLcPsL6<HGH?%{hBQnpM~FKSVyXH&^34QnZNRa2
+z^i?ve@vv_tuuBnkhQ{b)uf*7HguM`Bze7RbClrVCq{BQVnhUHoL#zu#n<v&F*Fv1@
+za+K>c&hij{V?Kw^8GAp@yb)#A-$SR9Cz^?BdMd3l@{0tz9--$s>sPWGUyo;8RcABX
+zE5e{F1btmipYl|X{{s~0x*{IZ;*S#NIvZt3F|TUBWR1#!X<nvD>RN#MOHyJ#!+usX
+F{sm^l%OwB+
+
+diff --git target/classes/com/yuan/crud/test/MapperTest.class target/classes/com/yuan/crud/test/MapperTest.class
+new file mode 100644
+index 0000000000000000000000000000000000000000..a337e0c684e0931eebe46c4ed29ab1d1fe8b7181
+GIT binary patch
+literal 2054
+zc$}40TUQfT6#h;E83=<w5U8T!jT%rgz1U(!t=w#516abP)T*6K4&mTj!ps?z_x_T;
+z^x3X1(7IMv``V}ejQ)nM)yqDU;g)2z_917Vv(Nta`SvaI>t8?q1mHS0)9A-|J8s~k
+zcJ$$98WXsscDFU$>A=Uho5m!j)H0pM3}!XlYr`iRK24(&<7&yb;l7e|{}~EtbYQLn
+zDa>nF(C~nvyUeSmFCFg6IkQ^jKEsuQ<vGSqXu5{whh@Ww^u|n`;RM5}#n6?);VU8#
+zC7VyWt|v_?JU3vtQSkhV5mbHQR@Qyf;m<t(sZrvl8yM@RB|U$~Fb@F6WGKC7!slgj
+zdxASv+uPxMpV4r0MzhDv2$&AG>>>{Wa>(#@M8K??)&@63iJl3Jpmu2#59|n)x+Pp8
+z?=U2@BP$Fo(_Wb~bQOfl=R>E&{UwuvW5^Ud%d}TaU#N4eY>^v+q8+MZD0v`_8m}eV
+z(kpFBHNChzLzplWW#w<v+%^r{bSp+tsyvYy6ZFdyDJPD-vnWmLDY=Rsq`FhhqR2Kw
+zVr|6U(?u`zEq+fZPF;r&=hPDnr;i}~&~+(!RJv6mHwfFhZQ3EhCYx3)ip26<$)C%b
+zhwDZ$vbn#k4%4<71dEYR@-_b7KBjAu#JZ@2epG%!w%e55xOdK5%4yY<8#gHuThuOM
+zVD7nN>lng$4WH{+L{Y~8-qNt7V;L(t&f*-yr8j684XZl7z?z0Hbv(pZIv(M%h9^3{
+z2IcJRaTnD0Lhc;6peoHV4AfU}Din5^`#MUn7__@vTRC#0p{#>rUD2-S*nntoU)L~H
+z<U`jBrA=-fR~2^x$sKB0FQkjUS|<t5ct9j1QQ@XTIqhwtCRVCC(xwsV%NFWinNTBe
+z`AsH=N><?qe;UI_T}3@HG1BOqW;@b_QrO1wa-N1E?VE1db83f7HU=FSM3dvylFM*1
+zJJM`uy6bhsEeK0NyzkHE^G$InMc$=R9LqLdHzMNV60qm+Do;&WQ5n#pF<MxU-a878
+zEeQ4`+eF>?^8eKAJ5rVF5^lhKS>!gQTWnLCUd$H$wUH-A^0+{slz#f+B#}_F1o~&E
+zQ;Otik_imrOq~vD%o^;N8cSL)(8(alNVbmdfxU>XFUH0|FD}ul*9>qO!zAe+o4|<(
+z{2SWPLh|wVNR0k~<StrBv}RJTpe67#QibI0Gd;=Qzr~%GXxl}5l9u%R)z|1)V`CZp
+zH9FV!aAIs1U72oLcG1)F5}7^pzQV}_R=-KG@BaSfMHI4Pbq*S>Lr7zULK-FARpf9D
+ztF(VaJH>XC80F~x3bKS6#1!pEi7&B?BRGXw!l_hUi=s>Xi9rox><{`r?<Xo3Wx|No
+ZcOvZo?cSxE_bj|m-+YD-9)bn<@E<LoCrbbT
+
