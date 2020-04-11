@@ -58,7 +58,7 @@ public class MvcTest {
         System.out.println("员工数据：");
         List<Employee> emps = pageInfo.getList();
         for(Employee emp:emps){
-            System.out.println("ID:"+emp.getEmpId()+"===>name"+emp.getEmpName());
+            System.out.println("ID:"+emp.getEmpId()+"===>name"+emp.getEmpName()+emp.getDept());
         }
     }
 }

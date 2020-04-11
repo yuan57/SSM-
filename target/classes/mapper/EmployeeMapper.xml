@@ -80,6 +80,9 @@
   <sql id="Base_Column_List">
     emp_id, emp_name, gender, email, d_id
   </sql>
+  <sql id="WithDept_Base_Column_List">
+    e.emp_id, e.emp_name, e.gender, e.email, e.d_id,d.dept_id,d.dept_name
+  </sql>
   <!--查询员工不带部门信息-->
   <select id="selectByExample" parameterType="com.yuan.crud.entity.EmployeeExample" resultMap="BaseResultMap">
     select
@@ -107,8 +110,8 @@
     <if test="distinct">
       distinct
     </if>
-    <include refid="Base_Column_List" />
-    from   tbl_emp e left join
+    <include refid="WithDept_Base_Column_List" />
+    from  tbl_emp e left join
     tbl_dept d on e.d_id = d.dept_id
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -119,7 +122,7 @@
   </select>
   <select id="selectByPrimaryKeyWithDept" parameterType="java.lang.Integer" resultMap="WithDeptBaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="WithDept_Base_Column_List" />
     from   tbl_emp e left join
     tbl_dept d on e.d_id = d.dept_id
     where emp_id = #{empId,jdbcType=INTEGER}
