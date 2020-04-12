@@ -7,7 +7,7 @@ public class Msg {
     //状态码 200-成功  300-失败
     private int code;
     //提示信息
-    private String Msg;
+    private String msg;
     //用户返回给浏览器的数据
     private Map<String,Object> data =new HashMap<>();
 
@@ -39,11 +39,11 @@ public class Msg {
     }
 
     public String getMsg() {
-        return Msg;
+        return msg;
     }
 
     public void setMsg(String msg) {
-        Msg = msg;
+        this.msg = msg;
     }
 
     public Map<String, Object> getData() {
@@ -56,7 +56,7 @@ public class Msg {
 
     public Msg(int code, String msg, Map<String, Object> data) {
         this.code = code;
-        Msg = msg;
+        this.msg = msg;
         this.data = data;
     }
     public Msg() {

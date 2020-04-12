@@ -27,4 +27,12 @@ public class Department {
     }
     public Department() {
     }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "deptId=" + deptId +
+                ", deptName='" + deptName + '\'' +
+                '}';
+    }
 }

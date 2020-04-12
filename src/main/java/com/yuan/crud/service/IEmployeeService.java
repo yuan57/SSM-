@@ -6,4 +6,10 @@ import java.util.List;
 
 public interface IEmployeeService {
     public List<Employee> getAll();
+    void saveEmp(Employee employee);
+    boolean checkUser(String empName);
+
+    Employee getEmp(Integer id);
+
+    void UpdateEmp(Employee employee);
 }
