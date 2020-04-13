@@ -12,4 +12,8 @@ public interface IEmployeeService {
     Employee getEmp(Integer id);
 
     void UpdateEmp(Employee employee);
+
+    void deleteEmp(Integer id);
+
+    void deleteBatch(List<Integer> ids);
 }

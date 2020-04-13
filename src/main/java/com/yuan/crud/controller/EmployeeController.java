@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,6 @@ public class EmployeeController {
      * 2、导入hibernate-validator包
      * @return
      */
-
     @RequestMapping(value = "/saveEmp",method = RequestMethod.POST)
     @ResponseBody
     public Msg saveEmp(@Valid Employee employee, BindingResult result){
@@ -91,6 +91,11 @@ public class EmployeeController {
 
     }
 
+    /**
+     * 检查输入姓名是否合法
+     * @param empName
+     * @return
+     */
     @RequestMapping("/checkUser")
     @ResponseBody
     public Msg  checkUser(@RequestParam("empName") String empName){
@@ -108,6 +113,12 @@ public class EmployeeController {
         }
     }
 
+    /**
+     * 根据id获取员工信息
+     * @param id
+     * @return
+     */
+
     @RequestMapping(value = "/getEmp/{id}",method = RequestMethod.GET)
     @ResponseBody
     public  Msg getEmp(@PathVariable("id") Integer id){
@@ -115,6 +126,13 @@ public class EmployeeController {
         return  Msg.success().add("emp",employee);
     }
 
+    /**
+     * 保存要更新的员工信息
+     * @param employee
+     * @param result
+     * @param request
+     * @return
+     */
 
     @RequestMapping(value = "/saveEmpWithUpdate/{empId}",method = RequestMethod.PUT)
     @ResponseBody
@@ -133,6 +151,31 @@ public class EmployeeController {
             return Msg.success();
         }
 
+    }
+
+    /**
+     * 根据ids删除员工
+     * 多合一:可删除多个和一个
+     * @param ids ids为字符串
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="/deleteEmpByIds/{ids}",method = RequestMethod.DELETE)
+    public Msg deleteEmpByIds(@PathVariable("ids") String ids){
+        if(ids.contains("-")){
+            //批量删除
+            String[] str_ids = ids.split("-");
+            List<Integer> del_ids = new ArrayList<>();
+            for(String id:str_ids){
+                del_ids.add(Integer.parseInt(id));
+            }
+            employeeService.deleteBatch(del_ids);
+        }else {
+            //单个删除
+            Integer id =Integer.parseInt(ids);
+            employeeService.deleteEmp(id);
+        }
+        return  Msg.success();
     }
 
 }

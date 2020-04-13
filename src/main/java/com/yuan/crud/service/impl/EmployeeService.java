@@ -53,5 +53,18 @@ public class EmployeeService implements IEmployeeService {
         employeeMapper.updateByPrimaryKeySelective(employee);
     }
 
+    @Override
+    public void deleteEmp(Integer id) {
+        employeeMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public void deleteBatch(List<Integer> ids) {
+        EmployeeExample employeeExample = new EmployeeExample();
+        EmployeeExample.Criteria criteria = employeeExample.createCriteria();
+        criteria.andEmpIdIn(ids);
+        employeeMapper.deleteByExample(employeeExample);
+    }
+
 
 }
