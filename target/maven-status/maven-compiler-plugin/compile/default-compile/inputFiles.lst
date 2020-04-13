@@ -1,0 +1,16 @@
+D:\ssm_crud\src\main\java\com\yuan\crud\service\IDpartmentService.java
+D:\ssm_crud\src\main\java\com\yuan\crud\controller\DeptController.java
+D:\ssm_crud\src\main\java\com\yuan\crud\entity\Department.java
+D:\ssm_crud\src\main\java\com\yuan\crud\mapper\EmployeeMapper.java
+D:\ssm_crud\src\main\java\com\yuan\crud\service\IEmployeeService.java
+D:\ssm_crud\src\main\java\com\yuan\crud\service\impl\DepartmentService.java
+D:\ssm_crud\src\main\java\com\yuan\crud\test\MBGTest.java
+D:\ssm_crud\src\main\java\com\yuan\crud\entity\EmployeeExample.java
+D:\ssm_crud\src\main\java\com\yuan\crud\test\MapperTest.java
+D:\ssm_crud\src\main\java\com\yuan\crud\entity\Employee.java
+D:\ssm_crud\src\main\java\com\yuan\crud\mapper\DepartmentMapper.java
+D:\ssm_crud\src\main\java\com\yuan\crud\entity\DepartmentExample.java
+D:\ssm_crud\src\main\java\com\yuan\crud\service\impl\EmployeeService.java
+D:\ssm_crud\src\main\java\com\yuan\crud\entity\Msg.java
+D:\ssm_crud\src\main\java\com\yuan\crud\controller\EmployeeController.java
+D:\ssm_crud\src\main\java\com\yuan\crud\test\MvcTest.java
