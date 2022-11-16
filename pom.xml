@@ -152,7 +152,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.9.8</version>
+      <version>2.12.7.1</version>
     </dependency>
 
     <!--JSR303校验支持，tomcat7及以上的服务器，之只需引入hibernate-validator，tomcat7以下，还需歪歪给lib包中替换标准的el-->
